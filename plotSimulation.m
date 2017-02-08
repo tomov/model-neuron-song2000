@@ -55,6 +55,7 @@ nTimePoints = round(simLength/stepSize);  % # of points in simulation
 traceFig = figure();         % Displays trace of Vm and conductances
 histFig  = figure();         % Displays histogram of cond. strength
 psthFig  = figure();         % Displays firing rate over time
+blahFig = figure();
 
 % Stores instantaneous firing rates, averaged over the plotWindow, over
 % time.  A new point is added every plotInterval.
@@ -76,6 +77,10 @@ aNeuron.inSynapses.rate = 10;
 aNeuron.exSynapses.Aplus = .020;
 aNeuron.exSynapses.Aminus = 1.05*aNeuron.exSynapses.Aplus;
 
+ras = [];
+preras = [];
+prespikes = zeros(round(0.100 / stepSize), 1);
+
 %% Simulation loop over points in simulated time
 %  n is the step # in the simulation
 for n=1:nTimePoints
@@ -88,15 +93,29 @@ for n=1:nTimePoints
     gExChunk(plotIdx) = aNeuron.gEx;   % Store excitatory conductance
     gInChunk(plotIdx) = aNeuron.gIn;   % Store inhibitory conductance
     rasChunk(plotIdx) = aNeuron.spike; % Store the raster
+   % ras = [ras; aNeuron.spike];
+   % preras = [preras; sum(aNeuron.exSynapses.preSynapticSpike)];
     
     % Every 10 plotWindows, clear the traceFig to prevent unseen Vm
     % trace from eating up memory.
     if mod(n,round(plotWindow*10/stepSize)) == 0
         figure(traceFig); clf; hold off;
     end
+
+   % if n >= 10 / stepSize && ras(end - round(length(prespikes) / 2))
+    %    prespikes = prespikes + preras(end - length(prespikes) + 1 : end);
+   % end
     
     % If the buffers are full, plot the traces to figures
     if (plotIdx == plotInterval + 1)
+        
+       % spikes = find(ras);
+       % intervals = spikes(2:end) - spikes(1:end-1);
+       % cv = std(intervals) / mean(intervals);
+       % disp(cv);
+        
+       % figure(blahFig);
+        %plot(prespikes');        
         
         % Plot traces of Vm
         figure(traceFig); subplot(3,1,1:2);

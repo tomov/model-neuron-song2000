@@ -8,8 +8,19 @@
 
 function neuron = stepTime(neuron, dT)
 
+logistic = @(Vthresh, lambda, V) 1 ./ (1 + exp(- (V - Vthresh) / lambda));
+
+% lambda = 0.00001   CV = 1.4674
+% lambda = 0.1   CV = 1.5
+% lambda = 1      CV =  1.5852
+
+lambda = 2;
+P_spike = logistic(neuron.Vthresh, lambda, neuron.Vm);
+do_spike = P_spike > rand;
+
 % Determine if the neuron will spike, or not
-if (neuron.Vm > neuron.Vthresh)
+%if (neuron.Vm > neuron.Vthresh)
+if (do_spike)
     neuron.spike = true;        % Note there's a spike
     % Reset Vm to the reset voltage
     neuron.Vm = neuron.Vreset;
